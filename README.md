@@ -2,21 +2,7 @@
 
 A modular monorepo system demonstrating component-based development, code reusability, and collaborative development practices.
 
-## Project Structure
 
-\`\`\`
-monorepo-project/
-├── packages/
-│   ├── ui-components/     # Reusable UI components (ShadCN-based)
-│   ├── utils/            # Shared utility functions
-│   ├── feature-x/        # Task Management System
-│   └── feature-y/        # User Profile System
-├── apps/
-│   └── demo-app/         # Demo application showcasing all features
-├── package.json          # Root package configuration
-├── turbo.json           # Turborepo configuration
-└── README.md            # This file
-\`\`\`
 
 ## Packages Overview
 
