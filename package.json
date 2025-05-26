@@ -1,0 +1,21 @@
+{
+  "name": "monorepo-project",
+  "version": "1.0.0",
+  "description": "A modular monorepo system with reusable components and features",
+  "private": true,
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "clean": "turbo clean",
+    "type-check": "turbo type-check",
+    "test": "turbo test"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "packageManager": "npm@10.0.0"
+}
