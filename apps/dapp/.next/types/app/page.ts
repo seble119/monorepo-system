@@ -1,4 +1,4 @@
-// File: C:\Users\user\Downloads\monorepo-system (1)\apps\dapp\src\app\page.tsx
+// File: C:\Users\PC\mono\monorepo-system\apps\dapp\src\app\page.tsx
 import * as entry from '../../../src/app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

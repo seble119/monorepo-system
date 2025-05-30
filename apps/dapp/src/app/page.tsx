@@ -2,7 +2,9 @@
 
 import { UserProfile } from "@monorepo/feature-y"
 import { TaskAnalytics, TaskManager } from "@monorepo/feature-x"
-import  { AnalyticsDashboard }  from "../../../../packages/analaytics-dashboard/index"
+import {UserLogin} from "../../../../packages/user-login"
+import UserRegistration from "../../../../packages/user-registration/user-registration"
+
 
 
 export default function HomePage() {
@@ -63,12 +65,20 @@ export default function HomePage() {
             <TaskManager />
           </div>
         </div>
-       < AnalyticsDashboard />
-
-        {/* Footer */}
-        <div className="text-center py-8 border-t border-gray-200">
-
+     <div className="mb-12">
+          <div className="mb-6 text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">User Profile System</h2>
+            <p className="text-gray-600">Feature Y - Complete user profile management</p>
+          </div>
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+           <UserLogin />
+          </div>
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+           <UserRegistration />
+          </div>
         </div>
+
+       
       </div>
     </div>
   )
