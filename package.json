@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "A modular monorepo system with reusable components and features",
   "private": true,
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -13,9 +16,13 @@
     "test": "turbo test"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
     "turbo": "^2.0.0",
-    "typescript": "^5.0.0",
-    "@types/node": "^20.0.0"
+    "typescript": "^5.0.0"
   },
-  "packageManager": "npm@10.0.0"
+  "packageManager": "npm@10.0.0",
+  "dependencies": {
+    "@radix-ui/react-checkbox": "^1.3.2",
+    "@radix-ui/react-dialog": "^1.1.14"
+  }
 }

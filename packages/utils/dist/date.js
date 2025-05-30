@@ -50,3 +50,15 @@ export function getRelativeTime(date) {
     }
     return formatDate(date, "short");
 }
+export function formatCurrency(amount, currency = "USD") {
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency,
+    }).format(amount);
+}
+export function formatTime(date) {
+    return new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+    }).format(date);
+}

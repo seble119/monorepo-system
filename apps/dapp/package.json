@@ -13,6 +13,7 @@
     "@monorepo/ui-components": "*",
     "@monorepo/utils": "*",
     "@monorepo/feature-x": "*",
+    "@monorepo/analaytics-dashboard": "*",
     "@monorepo/feature-y": "*",
     "next": "^14.0.0",
     "react": "^18.0.0",

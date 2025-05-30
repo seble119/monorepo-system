@@ -59,3 +59,15 @@ export function getRelativeTime(date: Date): string {
 
   return formatDate(date, "short")
 }
+export function formatCurrency(amount: number, currency = "USD"): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+  }).format(amount)
+}
+export function formatTime(date: Date): string {
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date)
+}

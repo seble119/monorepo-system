@@ -1,15 +1,34 @@
 "use client";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@monorepo/ui-components";
-import { TaskList } from "./TaskList";
+import { Button } from "@monorepo/ui-components";
 import { TaskForm } from "./TaskForm";
+import { TaskList } from "./TaskList";
+import { TaskFilters } from "./TaskFilters";
+import { TaskAnalytics } from "./TaskAnalaytics";
+import { BulkActions } from "./BulkActions";
 import { useTasks } from "../hooks/useTasks";
+import { Plus } from "lucide-react";
 export function TaskManager() {
-    const { tasks, createTask, updateTask, deleteTask, getTasksByStatus } = useTasks();
-    const [showForm, setShowForm] = useState(false);
-    return (_jsxs("div", { className: "space-y-6", children: [_jsxs(Card, { children: [_jsx(CardHeader, { children: _jsx(CardTitle, { children: "Task Management System" }) }), _jsx(CardContent, { children: _jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-6", children: [_jsxs("div", { children: [_jsxs("h3", { className: "font-semibold mb-4 text-gray-600", children: ["To Do (", getTasksByStatus("todo").length, ")"] }), _jsx(TaskList, { tasks: getTasksByStatus("todo"), onUpdateTask: updateTask, onDeleteTask: deleteTask })] }), _jsxs("div", { children: [_jsxs("h3", { className: "font-semibold mb-4 text-blue-600", children: ["In Progress (", getTasksByStatus("in-progress").length, ")"] }), _jsx(TaskList, { tasks: getTasksByStatus("in-progress"), onUpdateTask: updateTask, onDeleteTask: deleteTask })] }), _jsxs("div", { children: [_jsxs("h3", { className: "font-semibold mb-4 text-green-600", children: ["Completed (", getTasksByStatus("completed").length, ")"] }), _jsx(TaskList, { tasks: getTasksByStatus("completed"), onUpdateTask: updateTask, onDeleteTask: deleteTask })] })] }) })] }), showForm && (_jsx(TaskForm, { onSubmit: (data) => {
-                    createTask(data);
-                    setShowForm(false);
-                }, onCancel: () => setShowForm(false) })), !showForm && (_jsx("div", { className: "flex justify-center", children: _jsx("button", { onClick: () => setShowForm(true), className: "px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors", children: "Add New Task" }) }))] }));
+    const { tasks, filters, setFilters, stats, categories, selectedTasks, addTask, updateTask, deleteTask, addComment, deleteComment, bulkUpdateTasks, bulkDeleteTasks, toggleTaskSelection, selectAllTasks, clearSelection, } = useTasks();
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [editingTask, setEditingTask] = useState(null);
+    const handleEdit = (task) => {
+        setEditingTask(task);
+        setIsFormOpen(true);
+    };
+    const handleCloseForm = () => {
+        setIsFormOpen(false);
+        setEditingTask(null);
+    };
+    const handleBulkUpdate = (updates) => {
+        bulkUpdateTasks(Array.from(selectedTasks), updates);
+        clearSelection();
+    };
+    const handleBulkDelete = () => {
+        if (confirm(`Are you sure you want to delete ${selectedTasks.size} task(s)?`)) {
+            bulkDeleteTasks(Array.from(selectedTasks));
+        }
+    };
+    return (_jsxs("div", { className: "max-w-4xl mx-auto p-6", children: [_jsxs("div", { className: "flex justify-between items-center mb-6", children: [_jsxs("div", { children: [_jsx("h1", { className: "text-3xl font-bold text-gray-900", children: "Task Manager" }), _jsx("p", { className: "text-gray-600 mt-1", children: "Organize and track your tasks efficiently" })] }), _jsxs(Button, { onClick: () => setIsFormOpen(true), children: [_jsx(Plus, { className: "h-4 w-4 mr-2" }), "New Task"] })] }), _jsx(TaskAnalytics, { stats: stats }), _jsx(TaskFilters, { filters: filters, onFiltersChange: setFilters, categories: categories }), _jsx(BulkActions, { selectedCount: selectedTasks.size, onBulkUpdate: handleBulkUpdate, onBulkDelete: handleBulkDelete, onClearSelection: clearSelection, categories: categories }), _jsx(TaskList, { tasks: tasks, onUpdate: updateTask, onDelete: deleteTask, onEdit: handleEdit, onAddComment: addComment, onDeleteComment: deleteComment, selectedTasks: selectedTasks, onToggleSelect: toggleTaskSelection, onSelectAll: selectAllTasks, onClearSelection: clearSelection }), _jsx(TaskForm, { isOpen: isFormOpen, onClose: handleCloseForm, onSubmit: addTask, onUpdate: updateTask, editingTask: editingTask, categories: categories })] }));
 }

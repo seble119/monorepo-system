@@ -10,3 +10,5 @@ export declare function isValidDate(date: Date): boolean;
  * Get relative time string (e.g., "2 hours ago")
  */
 export declare function getRelativeTime(date: Date): string;
+export declare function formatCurrency(amount: number, currency?: string): string;
+export declare function formatTime(date: Date): string;

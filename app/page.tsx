@@ -1,7 +1,7 @@
-"use client"
+// "use client"
 
-import  from "../packages/ui-components/src/index"
+// import  from "../packages/ui-components/src/index"
 
-export default function SyntheticV0PageForDeployment() {
-  return < />
-}
+// export default function SyntheticV0PageForDeployment() {
+//   return < />
+// }

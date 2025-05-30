@@ -7,6 +7,7 @@ module.exports = {
     "../../packages/ui-components/src/**/*.{js,ts,jsx,tsx}",
     "../../packages/feature-x/src/**/*.{js,ts,jsx,tsx}",
     "../../packages/feature-y/src/**/*.{js,ts,jsx,tsx}",
+    "../../packages/analaytics-dashboard/src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {

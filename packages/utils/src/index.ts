@@ -15,3 +15,8 @@ export { sortBy, groupBy, filterBy } from "./data"
 
 // Types
 export type { ApiResponse, SortDirection, ValidationResult } from "./types"
+// In packages/utils/src/index.ts or wherever your utils are
+export function isOverdue(dueDate: Date): boolean {
+  return dueDate < new Date()
+}
+export { formatCurrency, formatTime } from "./date"

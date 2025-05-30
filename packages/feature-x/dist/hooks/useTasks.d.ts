@@ -1,8 +1,20 @@
-import type { Task, CreateTaskData, UpdateTaskData } from "../types";
+import type { Task, TaskFilterOptions, TaskStats } from "../Types/task";
 export declare function useTasks(): {
     tasks: Task[];
-    createTask: (data: CreateTaskData) => Task;
-    updateTask: (id: string, data: UpdateTaskData) => void;
+    allTasks: Task[];
+    filters: TaskFilterOptions;
+    setFilters: import("react").Dispatch<import("react").SetStateAction<TaskFilterOptions>>;
+    stats: TaskStats;
+    categories: string[];
+    selectedTasks: Set<string>;
+    addTask: (taskData: Omit<Task, "id" | "createdAt" | "updatedAt" | "comments">) => void;
+    updateTask: (id: string, updates: Partial<Task>) => void;
     deleteTask: (id: string) => void;
-    getTasksByStatus: (status: Task["status"]) => Task[];
+    addComment: (taskId: string, text: string) => void;
+    deleteComment: (taskId: string, commentId: string) => void;
+    bulkUpdateTasks: (taskIds: string[], updates: Partial<Task>) => void;
+    bulkDeleteTasks: (taskIds: string[]) => void;
+    toggleTaskSelection: (taskId: string) => void;
+    selectAllTasks: () => void;
+    clearSelection: () => void;
 };

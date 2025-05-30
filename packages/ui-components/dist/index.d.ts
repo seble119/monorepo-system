@@ -10,3 +10,6 @@ export { cn } from "./lib/utils";
 export type { ButtonProps } from "./components/button";
 export type { CardProps } from "./components/card";
 export type { InputProps } from "./components/input";
+export * from "./components/dialog";
+export * from "./components/checkbox";
+export * from "./components/progress";

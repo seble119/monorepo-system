@@ -9,3 +9,6 @@ export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 export { Textarea } from "./components/textarea";
 // Export utilities
 export { cn } from "./lib/utils";
+export * from "./components/dialog";
+export * from "./components/checkbox";
+export * from "./components/progress";

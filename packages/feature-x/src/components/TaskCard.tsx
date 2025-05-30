@@ -1,98 +1,128 @@
 "use client"
-import { Card, CardContent, Badge } from "@monorepo/ui-components"
-import { formatDate } from "@monorepo/utils"
-import { Clock, Trash2 } from "lucide-react"
-import type { Task, TaskStatus } from "../types"
+
+import { Card, CardContent } from "@monorepo/ui-components"
+import { Button } from "@monorepo/ui-components"
+import { Badge } from "@monorepo/ui-components"
+import { Checkbox } from "@monorepo/ui-components"
+import type { Task } from "../Types/task"
+import { TaskComments } from "./TaskComments"
+import { Calendar, Clock, Edit, Trash2, AlertTriangle } from "lucide-react"
+import { formatDate, isOverdue } from "@monorepo/utils"
 
 interface TaskCardProps {
   task: Task
-  onUpdateTask: (id: string, data: { status: TaskStatus }) => void
-  onDeleteTask: (id: string) => void
+  onUpdate: (id: string, updates: Partial<Task>) => void
+  onDelete: (id: string) => void
+  onEdit: (task: Task) => void
+  onAddComment: (taskId: string, text: string) => void
+  onDeleteComment: (taskId: string, commentId: string) => void
+  isSelected: boolean
+  onToggleSelect: (taskId: string) => void
 }
 
-export function TaskCard({ task, onUpdateTask, onDeleteTask }: TaskCardProps) {
+export function TaskCard({
+  task,
+  onUpdate,
+  onDelete,
+  onEdit,
+  onAddComment,
+  onDeleteComment,
+  isSelected,
+  onToggleSelect,
+}: TaskCardProps) {
   const getPriorityColor = (priority: Task["priority"]) => {
     switch (priority) {
       case "high":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800 border-red-200"
       case "medium":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800 border-yellow-200"
       case "low":
-        return "bg-green-100 text-green-800"
-      default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-green-100 text-green-800 border-green-200"
     }
   }
 
   const getStatusColor = (status: Task["status"]) => {
     switch (status) {
-      case "todo":
-        return "bg-gray-100 text-gray-800"
-      case "in-progress":
-        return "bg-blue-100 text-blue-800"
       case "completed":
-        return "bg-green-100 text-green-800"
-      default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-green-100 text-green-800 border-green-200"
+      case "in-progress":
+        return "bg-blue-100 text-blue-800 border-blue-200"
+      case "todo":
+        return "bg-gray-100 text-gray-800 border-gray-200"
     }
   }
 
-  const handleStatusChange = (newStatus: TaskStatus) => {
-    onUpdateTask(task.id, { status: newStatus })
-  }
+  const overdue = task.dueDate && isOverdue(task.dueDate) && task.status !== "completed"
 
   return (
-    <Card className="mb-3 hover:shadow-md transition-shadow">
+    <Card
+      className={`transition-all duration-200 hover:shadow-md ${isSelected ? "ring-2 ring-blue-500" : ""} ${overdue ? "border-red-300" : ""}`}
+    >
       <CardContent className="p-4">
-        <div className="flex justify-between items-start mb-2">
-          <h4 className="font-medium text-sm">{task.title}</h4>
-          <div className="flex gap-1">
-            <button
-              onClick={() => onDeleteTask(task.id)}
-              className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-            >
-              <Trash2 size={14} />
-            </button>
+        <div className="flex items-start gap-3">
+          <Checkbox checked={isSelected} onCheckedChange={() => onToggleSelect(task.id)} className="mt-1" />
+
+          <div className="flex-1 space-y-3">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <h3 className={`font-medium ${task.status === "completed" ? "line-through text-gray-500" : ""}`}>
+                  {task.title}
+                </h3>
+                {task.description && <p className="text-sm text-gray-600 mt-1">{task.description}</p>}
+              </div>
+
+              <div className="flex gap-1 ml-2">
+                <Button variant="ghost" size="sm" onClick={() => onEdit(task)} className="h-8 w-8 p-0">
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDelete(task.id)}
+                  className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Badge className={getStatusColor(task.status)}>{task.status.replace("-", " ")}</Badge>
+              <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
+              <Badge variant="outline">{task.category}</Badge>
+              {task.tags.map((tag) => (
+                <Badge key={tag} variant="secondary" className="text-xs">
+                  #{tag}
+                </Badge>
+              ))}
+            </div>
+
+            {task.dueDate && (
+              <div className={`flex items-center gap-1 text-sm ${overdue ? "text-red-600" : "text-gray-600"}`}>
+                {overdue ? <AlertTriangle className="h-4 w-4" /> : <Calendar className="h-4 w-4" />}
+                Due: {formatDate(task.dueDate)}
+                {overdue && <span className="font-medium">(Overdue)</span>}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                Created {formatDate(task.createdAt)}
+              </span>
+              {task.comments.length > 0 && (
+                <span>
+                  {task.comments.length} comment{task.comments.length !== 1 ? "s" : ""}
+                </span>
+              )}
+            </div>
+
+            <TaskComments
+              comments={task.comments}
+              onAddComment={(text) => onAddComment(task.id, text)}
+              onDeleteComment={(commentId) => onDeleteComment(task.id, commentId)}
+            />
           </div>
-        </div>
-
-        <p className="text-xs text-gray-600 mb-3">{task.description}</p>
-
-        <div className="flex flex-wrap gap-2 mb-3">
-          <Badge className={`text-xs ${getPriorityColor(task.priority)}`}>{task.priority}</Badge>
-          <Badge className={`text-xs ${getStatusColor(task.status)}`}>{task.status}</Badge>
-        </div>
-
-        <div className="flex items-center text-xs text-gray-500 mb-3">
-          <Clock size={12} className="mr-1" />
-          {formatDate(task.createdAt, "relative")}
-        </div>
-
-        <div className="flex gap-1">
-          {task.status !== "todo" && (
-            <button
-              onClick={() => handleStatusChange("todo")}
-              className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
-            >
-              To Do
-            </button>
-          )}
-          {task.status !== "in-progress" && (
-            <button
-              onClick={() => handleStatusChange("in-progress")}
-              className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
-            >
-              In Progress
-            </button>
-          )}
-          {task.status !== "completed" && (
-            <button
-              onClick={() => handleStatusChange("completed")}
-              className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors"
-            >
-              Complete
-            </button>
-          )}
         </div>
       </CardContent>
     </Card>

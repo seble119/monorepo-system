@@ -1,11 +1,10 @@
-// Export main components
 export { TaskManager } from "./components/TaskManager"
 export { TaskCard } from "./components/TaskCard"
 export { TaskForm } from "./components/TaskForm"
 export { TaskList } from "./components/TaskList"
-
-// Export hooks
+export { TaskFilters } from "./components/TaskFilters"
+export { TaskAnalytics } from "./components/TaskAnalaytics"
+export { BulkActions } from "./components/BulkActions"
+export { TaskComments } from "./components/TaskComments"
 export { useTasks } from "./hooks/useTasks"
-
-// Export types
-export type { Task, TaskStatus, TaskPriority } from "./types"
+export type { Task, TaskComment, TaskFilterOptions, TaskStats } from "./Types/task"

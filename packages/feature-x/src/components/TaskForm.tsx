@@ -1,100 +1,238 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle, Input, Label, Textarea, Button } from "@monorepo/ui-components"
-import { validateRequired } from "@monorepo/utils"
-import type { CreateTaskData, TaskPriority } from "../types"
+
+import { useState, useEffect } from "react"
+import { Button } from "@monorepo/ui-components"
+import { Input } from "@monorepo/ui-components"
+import { Textarea } from "@monorepo/ui-components"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@monorepo/ui-components"
+import type { Task } from "../Types/task"
+import { X, Plus } from "lucide-react"
 
 interface TaskFormProps {
-  onSubmit: (data: CreateTaskData) => void
-  onCancel: () => void
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (task: Omit<Task, "id" | "createdAt" | "updatedAt" | "comments">) => void
+  onUpdate?: (id: string, updates: Partial<Task>) => void
+  editingTask?: Task | null
+  categories: string[]
 }
 
-export function TaskForm({ onSubmit, onCancel }: TaskFormProps) {
+export function TaskForm({ isOpen, onClose, onSubmit, onUpdate, editingTask, categories }: TaskFormProps) {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    priority: "medium" as TaskPriority,
+    status: "todo" as Task["status"],
+    priority: "medium" as Task["priority"],
+    category: "",
+    dueDate: "",
+    tags: [] as string[],
   })
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [newTag, setNewTag] = useState("")
+  const [newCategory, setNewCategory] = useState("")
+
+  useEffect(() => {
+    if (editingTask) {
+      setFormData({
+        title: editingTask.title,
+        description: editingTask.description || "",
+        status: editingTask.status,
+        priority: editingTask.priority,
+        category: editingTask.category,
+        dueDate: editingTask.dueDate ? editingTask.dueDate.toISOString().split("T")[0] : "",
+        tags: editingTask.tags,
+      })
+    } else {
+      setFormData({
+        title: "",
+        description: "",
+        status: "todo",
+        priority: "medium",
+        category: categories[0] || "",
+        dueDate: "",
+        tags: [],
+      })
+    }
+  }, [editingTask, categories, isOpen])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const newErrors: Record<string, string> = {}
-
-    const titleValidation = validateRequired(formData.title, "Title")
-    if (!titleValidation.isValid) {
-      newErrors.title = titleValidation.message
+    const taskData = {
+      ...formData,
+      dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined,
     }
 
-    const descriptionValidation = validateRequired(formData.description, "Description")
-    if (!descriptionValidation.isValid) {
-      newErrors.description = descriptionValidation.message
+    if (editingTask && onUpdate) {
+      onUpdate(editingTask.id, taskData)
+    } else {
+      onSubmit(taskData)
     }
 
-    setErrors(newErrors)
+    onClose()
+  }
 
-    if (Object.keys(newErrors).length === 0) {
-      onSubmit(formData)
+  const addTag = () => {
+    if (newTag.trim() && !formData.tags.includes(newTag.trim())) {
+      setFormData((prev) => ({
+        ...prev,
+        tags: [...prev.tags, newTag.trim()],
+      }))
+      setNewTag("")
+    }
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
+    }))
+  }
+
+  const addCategory = () => {
+    if (newCategory.trim() && !categories.includes(newCategory.trim())) {
+      setFormData((prev) => ({
+        ...prev,
+        category: newCategory.trim(),
+      }))
+      setNewCategory("")
     }
   }
 
   return (
-    <Card className="max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>Create New Task</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>{editingTask ? "Edit Task" : "Create New Task"}</DialogTitle>
+        </DialogHeader>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="title">Title</Label>
+            <label className="text-sm font-medium">Title</label>
             <Input
-              id="title"
               value={formData.title}
               onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
               placeholder="Enter task title"
+              required
             />
-            {errors.title && <p className="text-sm text-red-600 mt-1">{errors.title}</p>}
           </div>
 
           <div>
-            <Label htmlFor="description">Description</Label>
+            <label className="text-sm font-medium">Description</label>
             <Textarea
-              id="description"
               value={formData.description}
               onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-              placeholder="Enter task description"
+              placeholder="Enter task description (optional)"
               rows={3}
             />
-            {errors.description && <p className="text-sm text-red-600 mt-1">{errors.description}</p>}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Status</label>
+              <select
+                value={formData.status}
+                onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value as Task["status"] }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
+              >
+                <option value="todo">To Do</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Priority</label>
+              <select
+                value={formData.priority}
+                onChange={(e) => setFormData((prev) => ({ ...prev, priority: e.target.value as Task["priority"] }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
           </div>
 
           <div>
-            <Label htmlFor="priority">Priority</Label>
+            <label className="text-sm font-medium">Category</label>
             <select
-              id="priority"
-              value={formData.priority}
-              onChange={(e) => setFormData((prev) => ({ ...prev, priority: e.target.value as TaskPriority }))}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              value={formData.category}
+              onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white mb-2"
             >
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
+              <option value="">Select category</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
             </select>
+
+            <div className="flex gap-2">
+              <Input
+                placeholder="New category"
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                className="flex-1"
+              />
+              <Button type="button" onClick={addCategory} size="sm">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
-          <div className="flex gap-2 pt-4">
-            <Button type="submit" className="flex-1">
-              Create Task
-            </Button>
-            <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
+          <div>
+            <label className="text-sm font-medium">Due Date</label>
+            <Input
+              type="date"
+              value={formData.dueDate}
+              onChange={(e) => setFormData((prev) => ({ ...prev, dueDate: e.target.value }))}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Tags</label>
+            <div className="flex gap-2 mb-2">
+              <Input
+                placeholder="Add tag"
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTag())}
+                className="flex-1"
+              />
+              <Button type="button" onClick={addTag} size="sm">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {formData.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {formData.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-sm"
+                  >
+                    #{tag}
+                    <button type="button" onClick={() => removeTag(tag)} className="text-gray-500 hover:text-gray-700">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-          </div>
+            <Button type="submit">{editingTask ? "Update Task" : "Create Task"}</Button>
+          </DialogFooter>
         </form>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   )
 }
