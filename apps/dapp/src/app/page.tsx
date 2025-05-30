@@ -3,11 +3,11 @@
 import { UserProfile } from "@monorepo/feature-y"
 import { TaskAnalytics, TaskManager } from "@monorepo/feature-x"
 import {UserLogin} from "../../../../packages/user-login"
-import UserRegistration from "../../../../packages/user-registration/user-registration"
+import {UserRegistration} from "../../../../packages/user-registration/user-registration"
+import LandingPage from "../../../../packages/home/home"
 
 
-
-export default function HomePage() {
+export default function Page() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
@@ -17,7 +17,7 @@ export default function HomePage() {
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Monorepo Demo Application</h1>
           <p className="text-lg text-gray-600"> Feature X (Task Management) and Feature Y (User Profile)</p>
         </div>
-
+        <LandingPage/>
         {/* User Profile Section */}
         <div className="mb-12">
           <div className="mb-6 text-center">
