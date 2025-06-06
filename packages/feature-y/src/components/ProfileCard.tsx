@@ -17,7 +17,7 @@ export function ProfileCard({ user, settings }: ProfileCardProps) {
     <div className="space-y-6">
       {/* Header Section */}
       <div className="flex items-start gap-6">
-        <Avatar className="w-24 h-24">
+        <Avatar className="w-25 h-24">
           <AvatarImage src={user.avatar || "/placeholder.svg"} alt={`${user.firstName} ${user.lastName}`} />
           <AvatarFallback className="text-lg">{getInitials(user.firstName, user.lastName)}</AvatarFallback>
         </Avatar>

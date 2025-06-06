@@ -2,3 +2,12 @@
 > @monorepo/ui-components@1.0.0 build
 > tsc
 
+src/components/checkbox.tsx(4,36): error TS2307: Cannot find module '@radix-ui/react-checkbox' or its corresponding type declarations.
+src/components/dialog.tsx(4,34): error TS2307: Cannot find module '@radix-ui/react-dialog' or its corresponding type declarations.
+npm error Lifecycle script `build` failed with error:
+npm error code 2
+npm error path C:\Users\PC\monorepo-system\packages\ui-components
+npm error workspace @monorepo/ui-components@1.0.0
+npm error location C:\Users\PC\monorepo-system\packages\ui-components
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c tsc

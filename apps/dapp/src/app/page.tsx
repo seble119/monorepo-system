@@ -2,7 +2,7 @@
 
 import { UserProfile } from "@monorepo/feature-y"
 import { TaskAnalytics, TaskManager } from "@monorepo/feature-x"
-import  { AnalyticsDashboard }  from "../../../../packages/analaytics-dashboard/index"
+// import  { AnalyticsDashboard }  from "../../../../packages/analaytics-dashboard/index"
 
 
 export default function HomePage() {
@@ -63,7 +63,7 @@ export default function HomePage() {
             <TaskManager />
           </div>
         </div>
-       < AnalyticsDashboard />
+       {/* < AnalyticsDashboard /> */}
 
         {/* Footer */}
         <div className="text-center py-8 border-t border-gray-200">
